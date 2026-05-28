@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerNet - Advanced Predictor</title>
+
+<style>
+body {
+  background: linear-gradient(135deg, #0b1a2f, #0f2a4d);
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 650px;
+  margin: auto;
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 15px;
+}
+
+.question {
+  text-align: left;
+  margin: 20px 0;
+}
+
+label {
+  display: block;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  color: white;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.result div {
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎯 Advanced Career Predictor</h2>
+<p>Answer honestly to get best career matches</p>
+
+<div class="container">
+
+<div class="question">
+<p>1. What interests you most?</p>
+<label><input type="radio" name="q1" value="tech"> Technology</label>
+<label><input type="radio" name="q1" value="health"> Healthcare</label>
+<label><input type="radio" name="q1" value="creative"> Creativity</label>
+<label><input type="radio" name="q1" value="business"> Business</label>
+<label><input type="radio" name="q1" value="law"> Law & Society</label>
+</div>
+
+<div class="question">
+<p>2. Favorite subject?</p>
+<label><input type="radio" name="q2" value="math"> Math</label>
+<label><input type="radio" name="q2" value="bio"> Biology</label>
+<label><input type="radio" name="q2" value="arts"> Arts</label>
+<label><input type="radio" name="q2" value="commerce"> Commerce</label>
+</div>
+
+<div class="question">
+<p>3. Work style?</p>
+<label><input type="radio" name="q3" value="logic"> Problem-solving</label>
+<label><input type="radio" name="q3" value="help"> Helping people</label>
+<label><input type="radio" name="q3" value="create"> Creating things</label>
+<label><input type="radio" name="q3" value="lead"> Leading teams</label>
+</div>
+
+<div class="question">
+<p>4. Preferred environment?</p>
+<label><input type="radio" name="q4" value="office"> Office</label>
+<label><input type="radio" name="q4" value="field"> Field work</label>
+<label><input type="radio" name="q4" value="remote"> Remote/Freelance</label>
+</div>
+
+<button onclick="predict()">Predict Career</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+function predict() {
+
+  let answers = [
+    document.querySelector('input[name="q1"]:checked'),
+    document.querySelector('input[name="q2"]:checked'),
+    document.querySelector('input[name="q3"]:checked'),
+    document.querySelector('input[name="q4"]:checked')
+  ];
+
+  if (answers.includes(null)) {
+    alert("Please answer all questions!");
+    return;
+  }
+
+  let score = {
+    tech: 0,
+    health: 0,
+    creative: 0,
+    business: 0,
+    law: 0
+  };
+
+  answers.forEach(ans => {
+    let v = ans.value;
+
+    if (v === "tech" || v === "math" || v === "logic") score.tech++;
+    if (v === "health" || v === "bio" || v === "help") score.health++;
+    if (v === "creative" || v === "arts" || v === "create") score.creative++;
+    if (v === "business" || v === "commerce" || v === "lead") score.business++;
+    if (v === "law") score.law++;
+  });
+
+  let careers = {
+    tech: ["💻 Software Developer", "📊 Data Scientist", "🤖 AI Engineer"],
+    health: ["🩺 Doctor", "💊 Pharmacist", "🧑‍⚕️ Nurse"],
+    creative: ["🎨 Designer", "🎬 Video Creator", "📸 Photographer"],
+    business: ["📈 Entrepreneur", "💼 Manager", "📊 Analyst"],
+    law: ["⚖️ Lawyer", "🏛️ Civil Services", "🕵️ Investigator"]
+  };
+
+  let sorted = Object.keys(score).sort((a,b)=>score[b]-score[a]);
+
+  let resultHTML = "<h3>Top Career Matches:</h3>";
+
+  sorted.slice(0,3).forEach(cat => {
+    resultHTML += "<div><b>" + cat.toUpperCase() + "</b><br>";
+    careers[cat].forEach(c => resultHTML += c + "<br>");
+    resultHTML += "</div>";
+  });
+
+  document.getElementById("result").innerHTML = resultHTML;
+}
+</script>
+
+</body>
+</html>
