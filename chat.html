@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+            background: linear-gradient(135deg, #0b1a2f, #0f2a4d);
+
+    }
+
+    .chat-container {
+      width: 350px;
+      height: 500px;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ff4da6, #2196f3);
+
+        color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 75%;
+    }
+
+    .user {
+      color: rgb(18, 15, 15);
+      align-self: flex-start;
+      
+    }
+
+    .bot {
+      background: #f1f1f1;
+      color: black;
+      align-self: flex-start;
+    }
+
+    .input-area {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff4da6, #2196f3);
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="header">AI Chatbot</div>
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+async function sendMessage() {
+  let input = document.getElementById("userInput");
+  let message = input.value.trim();
+
+  if (message === "") return;
+
+  addMessage(message, "user");
+  input.value = "";
+
+  try {
+    let response = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    });
+
+    let data = await response.json();
+    addMessage(data.reply, "bot");
+
+  } catch (error) {
+    addMessage("Error connecting to server", "bot");
+  }
+}
+
+function addMessage(text, sender) {
+  let chatBox = document.getElementById("chatBox");
+
+  let msgDiv = document.createElement("div");
+  msgDiv.classList.add("message", sender);
+  msgDiv.innerText = text;
+
+  chatBox.appendChild(msgDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Enter key support
+document.getElementById("userInput")
+  .addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+  });
+</script>
+
+</body>
+</html>
